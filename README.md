@@ -127,7 +127,11 @@ Step 5: Save and Exit
   - Restart the Squid service to apply the new configuration:
 
 ```yml
-sudo systemctl restart squid
+sudo systemctl restart squid    OR
+
+# To reload Squid without restarting:
+
+squid -k reconfigure
 ```
 5. Enable Squid to Start on Boot
   - Ensure that Squid starts automatically on boot:
@@ -157,7 +161,64 @@ curl --proxy http://your-squid-server-ip:3128 http://example.com
 ```
    - This command will send a request through the Squid proxy to access example.com.
 
+<br>
 
+
+
+
+
+### Configuration Examples:
+1, Allow Local Network Access: To allow a specific IP or network range to access Squid:
+
+  *Edit /etc/squid/squid.conf:*
+
+```yml
+acl internet_allow src 192.168.206.121/32
+http_access allow internet_allow
+```
+
+  - For a subnet:
+```yml
+acl internet_allow src 192.168.206.0/24
+http_access allow internet_allow
+```
+2. Block Specific IP Addresses: To block a range of IP addresses:
+
+```yml
+acl banned1 src 172.18.90.100-109
+http_access deny banned1
+```
+3. Block Specific Websites: To block domains like facebook.com and youtube.com:
+
+```yml
+acl blocksite1 dstdomain .facebook.com .youtube.com
+http_access deny blocksite1
+```
+
+4. Restrict by URI Pattern: To block URLs containing reddit.com:
+
+```yml
+acl banned_reddit url_regex ^http://.*reddit.com/.*$
+http_access deny banned_reddit
+```
+5, Block List of Websites:
+
+  - Create a file /etc/squid/blockedsites.squid:
+```yml
+.tesla.com
+.gmail.com
+.cdac.in
+```
+  *Edit /etc/squid/squid.conf:*
+```yml
+acl blocksites dstdomain "/etc/squid/blockedsites.squid"
+http_access deny blocksites
+```
+
+
+
+
+<br>
 
 <br>
 
