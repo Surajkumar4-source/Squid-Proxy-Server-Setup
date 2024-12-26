@@ -87,6 +87,7 @@ sudo systemctl restart nginx
 ```
 
 3. Install Squid Proxy Server
+   
 Step 1: Update System Packages
 ```yml
 sudo apt update
